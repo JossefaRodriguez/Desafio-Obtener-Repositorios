@@ -1,6 +1,6 @@
 // Crear una función asíncrona que contenga la URL en una variable.
 const baseUrl = 'https://api.github.com/users'
-
+ //Crear tres funciones, una request, otra getUser y por último una función getRepos
 const request = async (url) => {
     const response = await fetch(url)
     const result = await response.json()
@@ -18,12 +18,13 @@ const getRepos = async (user, pages, reposNumber) => {
 }
 
 const imprimirTabla = document.querySelector('#resultados')
-
+ // función en donde se capturen los datos ingresados por el usuario
 const llamadoDeRepos = (event) => {
     const usuario = document.querySelector('#nombre').value
     const paginas = document.querySelector('#pagina').value
     const repositorios = document.querySelector('#repoPagina').value
     event.preventDefault()
+// Implementación de una Promesa, realizar el llamado a las dos funciones al mismo tiempo que permiten conectarse con la API y traer la información en el caso de existir “getUser” y “getRepo”. 
     Promise.all([getUser(usuario), getRepos(usuario, paginas, repositorios)])
         .then(resp => {
             const datosUsuario = resp[0]
@@ -36,6 +37,7 @@ const llamadoDeRepos = (event) => {
             const localidad = datosUsuario.location
             const tipoUsuario = datosUsuario.type
             const datosRepos = resp[1]
+// Mostrar los resultados obtenidos de la API en el documento HTML en la sección de “Resultados”, como se muestra en la figura número dos.
             let crearTabla = `
             <div class="row"><div class="col text-left"">
                 <h3>Datos del Usuario</h3>
@@ -68,11 +70,12 @@ const llamadoDeRepos = (event) => {
             crearTabla = crearTabla + `</ul></div></div>`
             imprimirTabla.innerHTML = crearTabla
         })
+// En el caso que el mensaje retornado por la API sea “Not Found”, indicar mediante una ventana emergente que el usuario no existe        
         .catch(err => {
             alert(err)
             imprimirTabla.innerHTML = ""
         })
 }
-
+// Agregar una escucha (addEventListener) al formulario
 const formulario = document.querySelector('#formulario')
 formulario.addEventListener('submit', llamadoDeRepos)
